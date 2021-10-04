@@ -1,5 +1,4 @@
-import { task } from "hardhat/config";
-import { HardhatUserConfig } from "hardhat/config";
+import { task, HardhatUserConfig } from "hardhat/config";
 import { config as dotenv } from "dotenv";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
