@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 
 import "./ERC721Preset.sol";
 
-contract ExtendedAscii is ERC721Preset {
-    constructor() ERC721Preset("Extended ASCII", "EASCII", "") {}
+contract ExtendedAsciiPlot is ERC721Preset {
+    constructor() ERC721Preset("Extended ASCII Plot", "EAP", "") {}
 
     /**
      * @dev Creates a new token for `to`. The token
