@@ -9,7 +9,7 @@ contract ExtendedAsciiPlot is ERC721Preset {
 
     constructor() ERC721Preset("Extended ASCII Plot", "EAP", "") {}
 
-    function setmintFee(uint256 _fee) external onlyOwner {
+    function setMintFee(uint256 _fee) external onlyOwner {
         mintFee = _fee;
     }
 
