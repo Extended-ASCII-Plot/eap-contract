@@ -7,7 +7,13 @@ import "./ERC721Preset.sol";
 contract ExtendedAsciiPlot is ERC721Preset {
     uint256 private mintFee = 0 ether;
 
-    constructor() ERC721Preset("Extended ASCII Plot", "EAP", "https://eap.vercel.app/api/") {}
+    constructor()
+        ERC721Preset(
+            "Extended ASCII Plot",
+            "EAP",
+            "https://eap.vercel.app/api/"
+        )
+    {}
 
     function setMintFee(uint256 _fee) external onlyOwner {
         mintFee = _fee;
@@ -18,7 +24,12 @@ contract ExtendedAsciiPlot is ERC721Preset {
         _safeMint(to, tokenId);
     }
 
-    function tokenURI(uint256 _tokenId) override public view returns (string memory) {
+    function tokenURI(uint256 _tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
         return string(abi.encodePacked(_baseURI(), Strings.toString(_tokenId)));
     }
 }

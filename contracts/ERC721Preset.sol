@@ -5,7 +5,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 
@@ -13,22 +12,11 @@ import "@openzeppelin/contracts/utils/Context.sol";
  * @dev {ERC721} token, including:
  *
  *  - ability for holders to burn (destroy) their tokens
- *  - a pauser role that allows to stop all token transfers
  *
  * This contract uses {AccessControl} to lock permissioned functions using the
  * different roles - head to its documentation for details.
- *
- * The account that deploys the contract will be granted the pauser
- * roles, as well as the default admin role, which will let it grant
- * pauser roles to other accounts.
  */
-contract ERC721Preset is
-    Context,
-    Ownable,
-    ERC721Enumerable,
-    ERC721Burnable,
-    ERC721Pausable
-{
+contract ERC721Preset is Context, Ownable, ERC721Enumerable, ERC721Burnable {
     string private _baseTokenURI;
 
     /**
@@ -47,29 +35,11 @@ contract ERC721Preset is
         return _baseTokenURI;
     }
 
-    /**
-     * @dev Pauses all token transfers.
-     *
-     * See {ERC721Pausable} and {Pausable-_pause}.
-     */
-    function pause() public virtual onlyOwner {
-        _pause();
-    }
-
-    /**
-     * @dev Unpauses all token transfers.
-     *
-     * See {ERC721Pausable} and {Pausable-_unpause}.
-     */
-    function unpause() public virtual onlyOwner {
-        _unpause();
-    }
-
     function _beforeTokenTransfer(
         address from,
         address to,
         uint256 tokenId
-    ) internal virtual override(ERC721, ERC721Enumerable, ERC721Pausable) {
+    ) internal virtual override(ERC721, ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
