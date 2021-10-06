@@ -35,17 +35,21 @@ contract ERC721Preset is Context, Ownable, ERC721Enumerable, ERC721Burnable {
         return _baseTokenURI;
     }
 
+    function setBaseURI(string memory baseTokenURI) external onlyOwner {
+        _baseTokenURI = baseTokenURI;
+    }
+
+    function withdraw() external onlyOwner {
+        address payable _owner = payable(owner());
+        _owner.transfer(address(this).balance);
+    }
+
     function _beforeTokenTransfer(
         address from,
         address to,
         uint256 tokenId
     ) internal virtual override(ERC721, ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, tokenId);
-    }
-
-    function withdraw() external onlyOwner {
-        address payable _owner = payable(owner());
-        _owner.transfer(address(this).balance);
     }
 
     /**
