@@ -11,7 +11,10 @@ async function main() {
   }
 
   const Contract = await ethers.getContractFactory("ExtendedAsciiPlot");
-  const contract = await Contract.deploy();
+  const contract = await Contract.deploy(
+    // OpenSea proxy registry addresses for mainnet.
+    "0xa5409ec958c83c3f309868babaca7c86dcb077c1"
+  );
 
   console.log("Contract address:", contract.address);
 }
