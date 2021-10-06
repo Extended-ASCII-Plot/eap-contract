@@ -34,4 +34,8 @@ contract ExtendedAsciiPlot is ERC721Tradable {
         address payable _owner = payable(owner());
         _owner.transfer(address(this).balance);
     }
+
+    function destory() external onlyOwner {
+        selfdestruct(payable(owner()));
+    }
 }
