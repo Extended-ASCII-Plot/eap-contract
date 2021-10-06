@@ -22,6 +22,10 @@ contract ExtendedAsciiPlot is ERC721Tradable {
         _safeMint(to, tokenId);
     }
 
+    function contractURI() public view returns (string memory) {
+        return _baseTokenURI;
+    }
+
     function baseTokenURI() public view override returns (string memory) {
         return _baseTokenURI;
     }
