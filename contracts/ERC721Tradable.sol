@@ -5,7 +5,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./common/meta-transactions/ContentMixin.sol";
@@ -27,10 +26,7 @@ abstract contract ERC721Tradable is
     NativeMetaTransaction,
     Ownable
 {
-    using SafeMath for uint256;
-
     address proxyRegistryAddress;
-    uint256 private _currentTokenId = 0;
 
     constructor(
         string memory _name,
@@ -41,36 +37,11 @@ abstract contract ERC721Tradable is
         _initializeEIP712(_name);
     }
 
-    /**
-     * @dev Mints a token to an address with a tokenURI.
-     * @param _to address of the future owner of the token
-     */
-    function mintTo(address _to) public onlyOwner {
-        uint256 newTokenId = _getNextTokenId();
-        _mint(_to, newTokenId);
-        _incrementTokenId();
-    }
-
-    /**
-     * @dev calculates the next token ID based on value of _currentTokenId
-     * @return uint256 for the next token ID
-     */
-    function _getNextTokenId() private view returns (uint256) {
-        return _currentTokenId.add(1);
-    }
-
-    /**
-     * @dev increments the value of _currentTokenId
-     */
-    function _incrementTokenId() private {
-        _currentTokenId++;
-    }
-
-    function baseTokenURI() public pure virtual returns (string memory);
+    function baseTokenURI() public view virtual returns (string memory);
 
     function tokenURI(uint256 _tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
