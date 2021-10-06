@@ -7,7 +7,7 @@ import "./ERC721Tradable.sol";
 contract ExtendedAsciiPlot is ERC721Tradable {
     uint256 private mintFee = 0 ether;
 
-    string private _baseTokenURI = "https://eap.vercel.app/api/";
+    string private _baseTokenURI = "https://eap.wtf/api/";
 
     constructor(address _proxyRegistryAddress)
         ERC721Tradable("Extended ASCII Plot", "EAP", _proxyRegistryAddress)
