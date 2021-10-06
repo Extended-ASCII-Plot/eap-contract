@@ -28,8 +28,9 @@ const config: HardhatUserConfig = {
     hardhat: {
       initialBaseFeePerGas: 0, // workaround from https://github.com/sc-forks/solidity-coverage/issues/652#issuecomment-896330136 . Remove when that issue is closed.
     },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
+    mumbai: {
+      url: "https://matic-testnet-archive-rpc.bwarelabs.com",
+      chainId: 80001,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
