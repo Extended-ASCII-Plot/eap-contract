@@ -31,7 +31,7 @@ async function main() {
       mainnet: "0xa5409ec958c83c3f309868babaca7c86dcb077c1",
       rinkeby: "0xf57b2c51ded3a29e6891aba85459d600256cf317",
       polygon: "0x58807baD0B376efc12F5AD86aAc70E78ed67deaE",
-      mumbai: "",
+      mumbai: "0x0",
     }[network.name]
   );
 
