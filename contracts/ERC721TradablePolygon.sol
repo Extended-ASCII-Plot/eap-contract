@@ -45,6 +45,13 @@ abstract contract ERC721TradablePolygon is
             );
     }
 
+    function setProxyRegistryAddress(address _proxyRegistryAddress)
+        external
+        onlyOwner
+    {
+        proxyRegistryAddress = _proxyRegistryAddress;
+    }
+
     /**
      * Override isApprovedForAll to whitelist user's OpenSea proxy accounts to enable gas-less listings.
      */
