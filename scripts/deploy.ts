@@ -21,8 +21,8 @@ async function main() {
     {
       mainnet: "ExtendedAsciiPlot",
       rinkeby: "ExtendedAsciiPlot",
-      polygon: "ExtendedAsciiPlotPloygon",
-      mumbai: "ExtendedAsciiPlotPloygon",
+      polygon: "ExtendedAsciiPlotPolygon",
+      mumbai: "ExtendedAsciiPlotPolygon",
     }[network.name]!
   );
   const contract = await Contract.deploy(
