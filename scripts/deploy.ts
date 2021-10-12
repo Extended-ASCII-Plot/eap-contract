@@ -18,9 +18,12 @@ async function main() {
   }
 
   const Contract = await ethers.getContractFactory(
-    network.name === "polygon" || network.name === "mumbai"
-      ? "ExtendedAsciiPlotPloygon"
-      : "ExtendedAsciiPlot"
+    {
+      mainnet: "ExtendedAsciiPlot",
+      rinkeby: "ExtendedAsciiPlot",
+      polygon: "ExtendedAsciiPlotPloygon",
+      mumbai: "ExtendedAsciiPlotPloygon",
+    }[network.name]!
   );
   const contract = await Contract.deploy(
     // OpenSea proxy registry addresses
