@@ -8,4 +8,4 @@ artifacts
 coverage.json
 coverage/
 
-typechain/
+typechain-types/

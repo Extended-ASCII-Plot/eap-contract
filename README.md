@@ -1,1 +1,1 @@
-# Extended ASCII Plot Contracts
+# Extended ASCII Plot Contract
