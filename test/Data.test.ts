@@ -19,8 +19,8 @@ describe("Data", function () {
     expect(await library.getFontAt(0)).to.eq(
       ethers.BigNumber.from("0x8142241818244281")
     );
-    expect(await library.getFontAt(255)).to.eq(
-      ethers.BigNumber.from("0x030303030303FFFF")
+    expect(await library.getFontAt(0xff)).to.eq(
+      ethers.BigNumber.from("0xFFFFC0C0C0C0C0C0")
     );
   });
 

@@ -70,12 +70,12 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
                         abi.encodePacked(
                             dots,
                             "<rect x='",
-                            (Data.FONT_SIZE - 1 - xx).toString(),
+                            xx.toString(),
                             "' y='",
-                            (Data.FONT_SIZE - 1 - yy).toString(),
-                            "' fill='",
+                            yy.toString(),
+                            "' width='1' height='1' fill='",
                             foreground,
-                            "' width='1' height='1' />"
+                            "' />"
                         )
                     );
                 }
