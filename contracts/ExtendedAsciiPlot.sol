@@ -2,44 +2,41 @@
 
 pragma solidity ^0.8.0;
 
-import "./ERC721Tradable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
-contract ExtendedAsciiPlot is ERC721Tradable {
+contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
     uint256 private mintFee = 0 ether;
 
-    string private _baseTokenURI = "https://eap.wtf/api/";
-
     constructor(address _proxyRegistryAddress)
-        ERC721Tradable("Extended ASCII Plot", "EAP", _proxyRegistryAddress)
+        ERC721("Extended ASCII Plot", "EAP")
     {}
-
-    function setMintFee(uint256 _fee) external onlyOwner {
-        mintFee = _fee;
-    }
 
     function mint(address to, uint256 tokenId) public payable {
         require(msg.value >= mintFee, "Not enough mint fee");
         _safeMint(to, tokenId);
     }
 
-    function contractURI() public view returns (string memory) {
-        return _baseTokenURI;
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
+
+        return "";
     }
 
-    function baseTokenURI() public view override returns (string memory) {
-        return _baseTokenURI;
-    }
-
-    function setBaseTokenURI(string memory newBaseTokenURI) external onlyOwner {
-        _baseTokenURI = newBaseTokenURI;
+    function setMintFee(uint256 _fee) external onlyOwner {
+        mintFee = _fee;
     }
 
     function withdraw() external onlyOwner {
         address payable _owner = payable(owner());
         _owner.transfer(address(this).balance);
-    }
-
-    function destory() external onlyOwner {
-        selfdestruct(payable(owner()));
     }
 }
