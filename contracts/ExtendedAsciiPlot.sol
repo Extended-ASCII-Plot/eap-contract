@@ -14,7 +14,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
 
     uint256 private mintFee = 0 ether;
 
-    constructor(address _proxyRegistryAddress)
+    constructor()
         ERC721("Extended ASCII Plot", "EAP")
     {}
 
@@ -41,7 +41,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
         uint16 value,
         uint8 x,
         uint8 y
-    ) private pure returns (string memory) {
+    ) internal pure returns (string memory) {
         uint64 font = Data.getFontAt((value & 0xff00) >> 0x8);
         (uint8 fr, uint8 fg, uint8 fb) = Data.getColorAt((value & 0xf0) >> 0x4);
         (uint8 br, uint8 bg, uint8 bb) = Data.getColorAt(value & 0xf);
@@ -49,8 +49,8 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
         bytes[64] memory dots;
         for (uint8 xx = 0; xx < Data.FONT_SIZE; xx++) {
             for (uint8 yy = 0; yy < Data.FONT_SIZE; yy++) {
-                if (font & (1 << (x * Data.FONT_SIZE + y)) > 0) {
-                    dots[x * Data.FONT_SIZE + y] = abi.encodePacked(
+                if (font & (1 << (xx * Data.FONT_SIZE + yy)) > 0) {
+                    dots[xx * Data.FONT_SIZE + yy] = abi.encodePacked(
                         "<rect x='",
                         xx.toString(),
                         "' y='",
