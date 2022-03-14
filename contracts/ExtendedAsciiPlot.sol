@@ -46,6 +46,28 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
         (uint8 fr, uint8 fg, uint8 fb) = Data.getColorAt((value & 0xf0) >> 0x4);
         (uint8 br, uint8 bg, uint8 bb) = Data.getColorAt(value & 0xf);
 
+        bytes[64] memory dots;
+        for (uint8 xx = 0; xx < Data.FONT_SIZE; xx++) {
+            for (uint8 yy = 0; yy < Data.FONT_SIZE; yy++) {
+              if (font & (1<<(x * Data.FONT_SIZE + y)) > 0) {
+                dots[x * Data.FONT_SIZE + y] = abi.encodePacked(
+                    "<rect x='",
+                    xx.toString(),
+                    "' y='",
+                    yy.toString(),
+                    "' fill='rgb(",
+                    fr.toString(),
+                    ",",
+                    fg.toString(),
+                    ",",
+                    fb.toString(),
+                    ")' width='1' height='1'>",
+                    "</rect>"
+                );
+              }
+            }
+        }
+
         return
             string(
                 abi.encodePacked(
@@ -53,6 +75,10 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
                     x.toString(),
                     "' y='",
                     y.toString(),
+                    "' width='",
+                    Data.FONT_SIZE.toString(),
+                    "' height='",
+                    Data.FONT_SIZE.toString(),
                     "' fill='rgb(",
                     br.toString(),
                     ",",

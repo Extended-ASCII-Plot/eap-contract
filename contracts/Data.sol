@@ -9,9 +9,7 @@ library Data {
     bytes public constant COLORS =
         hex"0000001D2B537E2553008751AB52365F574FC2C3C7FFF1E8FF004DFFA300FFEC2700E43629ADFF83769CFF77A8FFCCAA";
 
-    uint8 public constant FONT_HEIGHT = 8;
-
-    uint8 public constant FONT_WIDTH = 8;
+    uint8 public constant FONT_SIZE = 8;
 
     function getFontAt(uint256 index) public pure returns (uint64) {
         bytes memory b = new bytes(8);
