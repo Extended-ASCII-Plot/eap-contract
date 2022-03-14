@@ -9,3 +9,4 @@ coverage.json
 coverage/
 
 typechain-types/
+contracts-exposed/
