@@ -3,9 +3,15 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
+import "./Data.sol";
+
 contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
+    using Strings for uint8;
+
     uint256 private mintFee = 0 ether;
 
     constructor(address _proxyRegistryAddress)
@@ -29,6 +35,34 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
         );
 
         return "";
+    }
+
+    function char(
+        uint16 value,
+        uint8 x,
+        uint8 y
+    ) private pure returns (string memory) {
+        uint64 font = Data.getFontAt((value & 0xff00) >> 0x8);
+        (uint8 fr, uint8 fg, uint8 fb) = Data.getColorAt((value & 0xf0) >> 0x4);
+        (uint8 br, uint8 bg, uint8 bb) = Data.getColorAt(value & 0xf);
+
+        return
+            string(
+                abi.encodePacked(
+                    "<rect x='",
+                    x.toString(),
+                    "' y='",
+                    y.toString(),
+                    "' fill='rgb(",
+                    br.toString(),
+                    ",",
+                    bg.toString(),
+                    ",",
+                    bb.toString(),
+                    ")'>",
+                    "</rect>"
+                )
+            );
     }
 
     function setMintFee(uint256 _fee) external onlyOwner {
