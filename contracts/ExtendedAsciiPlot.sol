@@ -14,9 +14,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
 
     uint256 private mintFee = 0 ether;
 
-    constructor()
-        ERC721("Extended ASCII Plot", "EAP")
-    {}
+    constructor() ERC721("Extended ASCII Plot", "EAP") {}
 
     function mint(address to, uint256 tokenId) public payable {
         require(msg.value >= mintFee, "Not enough mint fee");
@@ -45,24 +43,40 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
         uint64 font = Data.getFontAt((value & 0xff00) >> 0x8);
         (uint8 fr, uint8 fg, uint8 fb) = Data.getColorAt((value & 0xf0) >> 0x4);
         (uint8 br, uint8 bg, uint8 bb) = Data.getColorAt(value & 0xf);
+        bytes memory foreground = abi.encodePacked(
+            "rgb(",
+            fr.toString(),
+            ",",
+            fg.toString(),
+            ",",
+            fb.toString(),
+            ")"
+        );
+        bytes memory background = abi.encodePacked(
+            "rgb(",
+            br.toString(),
+            ",",
+            bg.toString(),
+            ",",
+            bb.toString(),
+            ")"
+        );
 
-        bytes[64] memory dots;
+        bytes memory dots;
         for (uint8 xx = 0; xx < Data.FONT_SIZE; xx++) {
             for (uint8 yy = 0; yy < Data.FONT_SIZE; yy++) {
                 if (font & (1 << (xx * Data.FONT_SIZE + yy)) > 0) {
-                    dots[xx * Data.FONT_SIZE + yy] = abi.encodePacked(
-                        "<rect x='",
-                        xx.toString(),
-                        "' y='",
-                        yy.toString(),
-                        "' fill='rgb(",
-                        fr.toString(),
-                        ",",
-                        fg.toString(),
-                        ",",
-                        fb.toString(),
-                        ")' width='1' height='1'>",
-                        "</rect>"
+                    dots = (
+                        abi.encodePacked(
+                            dots,
+                            "<rect x='",
+                            (Data.FONT_SIZE - 1 - xx).toString(),
+                            "' y='",
+                            (Data.FONT_SIZE - 1 - yy).toString(),
+                            "' fill='",
+                            foreground,
+                            "' width='1' height='1' />"
+                        )
                     );
                 }
             }
@@ -79,14 +93,10 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
                     Data.FONT_SIZE.toString(),
                     "' height='",
                     Data.FONT_SIZE.toString(),
-                    "' fill='rgb(",
-                    br.toString(),
-                    ",",
-                    bg.toString(),
-                    ",",
-                    bb.toString(),
-                    ")'>",
-                    "</rect>"
+                    "' fill='",
+                    background,
+                    "' />",
+                    dots
                 )
             );
     }

@@ -21,8 +21,8 @@ describe("ExtendedAsciiPlot", function () {
   });
 
   it("char", async () => {
-    expect(await contract.$char(0, 0, 0)).to.eq(
-      "<rect x='0' y='0' width='8' height='8' fill='rgb(0,0,0)'></rect>"
+    expect(await contract.$char(0x1234, 0, 0)).to.eq(
+      "<rect x='0' y='0' width='8' height='8' fill='rgb(171,82,54)' /><rect x='7' y='6' fill='rgb(0,135,81)' width='1' height='1' /><rect x='7' y='4' fill='rgb(0,135,81)' width='1' height='1' /><rect x='7' y='2' fill='rgb(0,135,81)' width='1' height='1' /><rect x='7' y='0' fill='rgb(0,135,81)' width='1' height='1' /><rect x='6' y='6' fill='rgb(0,135,81)' width='1' height='1' /><rect x='6' y='4' fill='rgb(0,135,81)' width='1' height='1' /><rect x='6' y='2' fill='rgb(0,135,81)' width='1' height='1' /><rect x='6' y='0' fill='rgb(0,135,81)' width='1' height='1' /><rect x='5' y='6' fill='rgb(0,135,81)' width='1' height='1' /><rect x='5' y='4' fill='rgb(0,135,81)' width='1' height='1' /><rect x='5' y='2' fill='rgb(0,135,81)' width='1' height='1' /><rect x='5' y='0' fill='rgb(0,135,81)' width='1' height='1' /><rect x='4' y='6' fill='rgb(0,135,81)' width='1' height='1' /><rect x='4' y='4' fill='rgb(0,135,81)' width='1' height='1' /><rect x='4' y='2' fill='rgb(0,135,81)' width='1' height='1' /><rect x='4' y='0' fill='rgb(0,135,81)' width='1' height='1' />"
     );
   });
 });
