@@ -12,11 +12,11 @@ library Data {
     uint8 public constant FONT_SIZE = 8;
 
     function getFontAt(uint256 index) public pure returns (uint64) {
-        bytes memory b = new bytes(8);
+        uint64 b;
         for (uint8 i = 0; i < 8; i++) {
-            b[i] = FONTS[index * 8 + i];
+            b += uint64(uint8(FONTS[index * 8 + i])) << ((7 - i) * 8);
         }
-        return uint64(bytes8(b));
+        return uint64(b);
     }
 
     function getColorAt(uint256 index)
@@ -29,9 +29,9 @@ library Data {
         )
     {
         return (
-            uint8(FONTS[index * 3]),
-            uint8(FONTS[index * 3 + 1]),
-            uint8(FONTS[index * 3 + 2])
+            uint8(COLORS[index * 3]),
+            uint8(COLORS[index * 3 + 1]),
+            uint8(COLORS[index * 3 + 2])
         );
     }
 }

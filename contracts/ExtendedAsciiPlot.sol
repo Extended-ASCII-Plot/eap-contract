@@ -49,22 +49,22 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
         bytes[64] memory dots;
         for (uint8 xx = 0; xx < Data.FONT_SIZE; xx++) {
             for (uint8 yy = 0; yy < Data.FONT_SIZE; yy++) {
-              if (font & (1<<(x * Data.FONT_SIZE + y)) > 0) {
-                dots[x * Data.FONT_SIZE + y] = abi.encodePacked(
-                    "<rect x='",
-                    xx.toString(),
-                    "' y='",
-                    yy.toString(),
-                    "' fill='rgb(",
-                    fr.toString(),
-                    ",",
-                    fg.toString(),
-                    ",",
-                    fb.toString(),
-                    ")' width='1' height='1'>",
-                    "</rect>"
-                );
-              }
+                if (font & (1 << (x * Data.FONT_SIZE + y)) > 0) {
+                    dots[x * Data.FONT_SIZE + y] = abi.encodePacked(
+                        "<rect x='",
+                        xx.toString(),
+                        "' y='",
+                        yy.toString(),
+                        "' fill='rgb(",
+                        fr.toString(),
+                        ",",
+                        fg.toString(),
+                        ",",
+                        fb.toString(),
+                        ")' width='1' height='1'>",
+                        "</rect>"
+                    );
+                }
             }
         }
 

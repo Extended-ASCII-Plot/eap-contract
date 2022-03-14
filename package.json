@@ -2,6 +2,7 @@
   "name": "extended-ascii-plot-contract",
   "scripts": {
     "start": "npx hardhat node --hostname 0.0.0.0",
+    "test": "npx hardhat test --network hardhat",
     "compile": "npx hardhat compile",
     "clean": "npx hardhat clean",
     "format": "npx prettier '**/*.{json,sol,md,ts}' --write"
