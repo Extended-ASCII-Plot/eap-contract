@@ -9,8 +9,10 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import "./SVG.sol";
 
+error CallerIsNotUser();
 error QueryNonexistentToken();
 error MintUnderPrice();
+error NoFreeMintPrivilege();
 error InvalidTokenId();
 error MaximumSupplyExceed();
 
@@ -27,12 +29,34 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
     // Mapping from tokenId to token index
     mapping(uint256 => uint256) public tokensIndex;
 
-    constructor() ERC721("Extended ASCII Plot", "EAP") {}
+    // Mapping from address to free mint count
+    mapping(address => uint256) public freeMintList;
 
-    function mint(address to, uint256 tokenId) public payable {
+    modifier callerIsUser() {
+        if (tx.origin != msg.sender) revert CallerIsNotUser();
+        _;
+    }
+
+    constructor() ERC721("Extended ASCII Plot", "EAP") {
+        freeMintList[0xEa8e1d16624CBf0290AB887129bB70E5Cdb4b557] = 1;
+    }
+
+    function mint(address to, uint256 tokenId) public payable callerIsUser {
         if (msg.value < price) revert MintUnderPrice();
         if (!SVG.isValid(tokenId)) revert InvalidTokenId();
         if (_currentIndex >= MAX_SUPPLY) revert MaximumSupplyExceed();
+
+        _safeMint(to, tokenId);
+
+        tokensIndex[tokenId] = _currentIndex++;
+    }
+
+    function freeMint(address to, uint256 tokenId) public callerIsUser {
+        if (freeMintList[msg.sender] == 0) revert NoFreeMintPrivilege();
+        if (!SVG.isValid(tokenId)) revert InvalidTokenId();
+        if (_currentIndex >= MAX_SUPPLY) revert MaximumSupplyExceed();
+
+        freeMintList[msg.sender]--;
 
         _safeMint(to, tokenId);
 
