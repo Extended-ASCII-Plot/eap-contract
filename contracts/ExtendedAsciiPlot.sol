@@ -30,7 +30,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
     mapping(uint256 => uint256) public tokensIndex;
 
     // Mapping from address to free mint count
-    mapping(address => uint256) public freeMintList;
+    mapping(address => uint256) public freeMintPrivileges;
 
     modifier callerIsUser() {
         if (tx.origin != msg.sender) revert CallerIsNotUser();
@@ -38,7 +38,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
     }
 
     constructor() ERC721("Extended ASCII Plot", "EAP") {
-        freeMintList[0xEa8e1d16624CBf0290AB887129bB70E5Cdb4b557] = 1;
+        freeMintPrivileges[0xEa8e1d16624CBf0290AB887129bB70E5Cdb4b557] = 1;
     }
 
     function mint(address to, uint256 tokenId) public payable callerIsUser {
@@ -52,11 +52,11 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
     }
 
     function freeMint(address to, uint256 tokenId) public callerIsUser {
-        if (freeMintList[msg.sender] == 0) revert NoFreeMintPrivilege();
+        if (freeMintPrivileges[msg.sender] == 0) revert NoFreeMintPrivilege();
         if (!SVG.isValid(tokenId)) revert InvalidTokenId();
         if (_currentIndex >= MAX_SUPPLY) revert MaximumSupplyExceed();
 
-        freeMintList[msg.sender]--;
+        freeMintPrivileges[msg.sender]--;
 
         _safeMint(to, tokenId);
 
