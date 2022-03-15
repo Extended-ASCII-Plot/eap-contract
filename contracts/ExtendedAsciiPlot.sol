@@ -9,6 +9,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 import "./Data.sol";
 
+error QueryNonexistentToken();
+error MintUnderPrice();
+
 contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
     using Strings for uint8;
 
@@ -17,7 +20,8 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
     constructor() ERC721("Extended ASCII Plot", "EAP") {}
 
     function mint(address to, uint256 tokenId) public payable {
-        require(msg.value >= mintFee, "Not enough mint fee");
+        if (msg.value < mintFee) revert MintUnderPrice();
+
         _safeMint(to, tokenId);
     }
 
@@ -27,10 +31,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721Enumerable {
         override
         returns (string memory)
     {
-        require(
-            _exists(tokenId),
-            "ERC721Metadata: URI query for nonexistent token"
-        );
+        if (!_exists(tokenId)) revert QueryNonexistentToken();
 
         return "";
     }
