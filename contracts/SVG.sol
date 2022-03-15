@@ -11,6 +11,15 @@ library SVG {
 
     uint8 public constant PLOT_CHAR_SIZE = 4;
 
+    function svg(uint256 value) public pure returns (bytes memory) {
+        return
+            abi.encodePacked(
+                "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='512' height='512' shape-rendering='crispEdges'>",
+                plot(value),
+                "</svg>"
+            );
+    }
+
     function plot(uint256 value) public pure returns (bytes memory) {
         bytes memory chars;
         for (uint8 x = 0; x < PLOT_CHAR_SIZE; x++) {
