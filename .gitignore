@@ -10,3 +10,4 @@ coverage/
 
 typechain-types/
 contracts-exposed/
+.deps/
