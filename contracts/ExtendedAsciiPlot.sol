@@ -79,7 +79,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
                         abi.encodePacked(
                             '{"name": "EAP #',
                             tokensIndex[tokenId].toString(),
-                            '", "description": "Extended ASCII Plot (EAP) is user-generated 256bit textmode art fully stored on chain.", "image": "data:image/svg+xml;base64,',
+                            '", "description": "Extended ASCII Plot (EAP) is user-generated 4x4 ascii art fully stored on chain.", "image": "data:image/svg+xml;base64,',
                             Base64.encode(SVG.svg(tokenId)),
                             '"}'
                         )
