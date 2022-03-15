@@ -43,24 +43,26 @@ library SVG {
         uint8 y
     ) public pure returns (bytes memory) {
         uint64 font = Data.getFontAt((value & 0xff00) >> 0x8);
-        (uint8 fr, uint8 fg, uint8 fb) = Data.getColorAt((value & 0xf0) >> 0x4);
-        (uint8 br, uint8 bg, uint8 bb) = Data.getColorAt(value & 0xf);
-        bytes memory foreground = abi.encodePacked(
+        (uint8 fRed, uint8 fGreen, uint8 fBlue) = Data.getColorAt(
+            (value & 0xf0) >> 0x4
+        );
+        (uint8 bRed, uint8 bGreen, uint8 bBlue) = Data.getColorAt(value & 0xf);
+        bytes memory fGround = abi.encodePacked(
             "rgb(",
-            fr.toString(),
+            fRed.toString(),
             ",",
-            fg.toString(),
+            fGreen.toString(),
             ",",
-            fb.toString(),
+            fBlue.toString(),
             ")"
         );
-        bytes memory background = abi.encodePacked(
+        bytes memory bGround = abi.encodePacked(
             "rgb(",
-            br.toString(),
+            bRed.toString(),
             ",",
-            bg.toString(),
+            bGreen.toString(),
             ",",
-            bb.toString(),
+            bBlue.toString(),
             ")"
         );
 
@@ -69,7 +71,7 @@ library SVG {
             if (font & (1 << i) > 0) {
                 uint8 xx = i / Data.FONT_SIZE + x;
                 uint8 yy = (i % Data.FONT_SIZE) + y;
-                dots = abi.encodePacked(dots, dot(xx, yy, foreground));
+                dots = abi.encodePacked(dots, dot(xx, yy, fGround));
             }
         }
 
@@ -84,7 +86,7 @@ library SVG {
                 "' height='",
                 Data.FONT_SIZE.toString(),
                 "' fill='",
-                background,
+                bGround,
                 "' />",
                 dots
             );
