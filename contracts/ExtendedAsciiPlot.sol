@@ -12,11 +12,14 @@ import "./SVG.sol";
 error QueryNonexistentToken();
 error MintUnderPrice();
 error InvalidTokenId();
+error MaximumSupplyExceed();
 
 contract ExtendedAsciiPlot is Ownable, ERC721 {
     using Strings for uint256;
 
-    uint256 public price = 0 ether;
+    uint256 public constant MAX_SUPPLY = 10000;
+
+    uint256 public price = 0.01 ether;
 
     // The tokenId of the next token to be minted.
     uint256 private _currentIndex;
@@ -29,6 +32,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
     function mint(address to, uint256 tokenId) public payable {
         if (msg.value < price) revert MintUnderPrice();
         if (!SVG.isValid(tokenId)) revert InvalidTokenId();
+        if (_currentIndex >= MAX_SUPPLY) revert MaximumSupplyExceed();
 
         _safeMint(to, tokenId);
 
