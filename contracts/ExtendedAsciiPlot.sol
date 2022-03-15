@@ -16,7 +16,7 @@ error InvalidTokenId();
 contract ExtendedAsciiPlot is Ownable, ERC721 {
     using Strings for uint256;
 
-    uint256 private mintFee = 0 ether;
+    uint256 public price = 0 ether;
 
     // The tokenId of the next token to be minted.
     uint256 private _currentIndex;
@@ -27,7 +27,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
     constructor() ERC721("Extended ASCII Plot", "EAP") {}
 
     function mint(address to, uint256 tokenId) public payable {
-        if (msg.value < mintFee) revert MintUnderPrice();
+        if (msg.value < price) revert MintUnderPrice();
         if (!SVG.isValid(tokenId)) revert InvalidTokenId();
 
         _safeMint(to, tokenId);
@@ -64,12 +64,11 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
         return _currentIndex;
     }
 
-    function setMintFee(uint256 _fee) external onlyOwner {
-        mintFee = _fee;
+    function setPrice(uint256 _price) external onlyOwner {
+        price = _price;
     }
 
     function withdraw() external onlyOwner {
-        address payable _owner = payable(owner());
-        _owner.transfer(address(this).balance);
+        payable(owner()).transfer(address(this).balance);
     }
 }
