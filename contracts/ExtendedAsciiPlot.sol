@@ -11,7 +11,7 @@ import "./SVG.sol";
 
 error QueryNonexistentToken();
 error MintUnderPrice();
-error IllegalTokenId();
+error InvalidTokenId();
 
 contract ExtendedAsciiPlot is Ownable, ERC721 {
     using Strings for uint256;
@@ -26,27 +26,13 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
 
     constructor() ERC721("Extended ASCII Plot", "EAP") {}
 
-    function mint(address to, uint256 tokenId)
-        public
-        payable
-        checkTokenId(tokenId)
-    {
+    function mint(address to, uint256 tokenId) public payable {
         if (msg.value < mintFee) revert MintUnderPrice();
+        if (!SVG.isValid(tokenId)) revert InvalidTokenId();
 
         _safeMint(to, tokenId);
 
         _tokensIndex[tokenId] = _currentIndex++;
-    }
-
-    modifier checkTokenId(uint256 tokenId) {
-        for (uint256 i = 0; i < SVG.PLOT_CHAR_SIZE * SVG.PLOT_CHAR_SIZE; i++) {
-            uint16 value = uint16(tokenId >> (i * 16));
-            uint8 fGround = uint8((value & 0xf0) >> 0x4);
-            uint8 bGround = uint8(value & 0xf);
-            if (fGround == bGround) revert IllegalTokenId();
-        }
-
-        _;
     }
 
     function tokenURI(uint256 tokenId)

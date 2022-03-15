@@ -9,27 +9,27 @@ import "./Data.sol";
 library SVG {
     using Strings for uint8;
 
-    uint8 public constant PLOT_CHAR_SIZE = 4;
-
     function svg(uint256 value) public pure returns (bytes memory) {
-        return
-            abi.encodePacked(
-                "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='512' height='512' shape-rendering='crispEdges'>",
-                plot(value),
-                "</svg>"
-            );
+        unchecked {
+            return
+                abi.encodePacked(
+                    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='512' height='512' shape-rendering='crispEdges'>",
+                    plot(value),
+                    "</svg>"
+                );
+        }
     }
 
     function plot(uint256 value) public pure returns (bytes memory) {
         bytes memory chars;
-        for (uint8 x = 0; x < PLOT_CHAR_SIZE; x++) {
-            for (uint8 y = 0; y < PLOT_CHAR_SIZE; y++) {
+        for (uint8 x = 0; x < 4; x++) {
+            for (uint8 y = 0; y < 4; y++) {
                 chars = abi.encodePacked(
                     chars,
                     char(
-                        uint16(value >> ((x + y * PLOT_CHAR_SIZE) * 16)),
-                        (PLOT_CHAR_SIZE - 1 - x) * Data.FONT_SIZE,
-                        (PLOT_CHAR_SIZE - 1 - y) * Data.FONT_SIZE
+                        uint16(value >> ((x + y * 4) * 16)),
+                        (4 - 1 - x) * 8,
+                        (4 - 1 - y) * 8
                     )
                 );
             }
@@ -67,10 +67,10 @@ library SVG {
         );
 
         bytes memory dots;
-        for (uint8 i = 0; i < Data.FONT_SIZE * Data.FONT_SIZE; i++) {
+        for (uint8 i = 0; i < 8 * 8; i++) {
             if (font & (1 << i) > 0) {
-                uint8 xx = i / Data.FONT_SIZE + x;
-                uint8 yy = (i % Data.FONT_SIZE) + y;
+                uint8 xx = i / 8 + x;
+                uint8 yy = (i % 8) + y;
                 dots = abi.encodePacked(dots, dot(xx, yy, fGround));
             }
         }
@@ -81,11 +81,7 @@ library SVG {
                 x.toString(),
                 "' y='",
                 y.toString(),
-                "' width='",
-                Data.FONT_SIZE.toString(),
-                "' height='",
-                Data.FONT_SIZE.toString(),
-                "' fill='",
+                "' width='8' height='8' fill='",
                 bGround,
                 "' />",
                 dots
@@ -107,5 +103,19 @@ library SVG {
                 foreground,
                 "' />"
             );
+    }
+
+    function isValid(uint256 value) public pure returns (bool) {
+        unchecked {
+            for (uint256 i = 0; i < 16; i++) {
+                uint16 t = uint16(value >> (i * 16));
+                uint8 fGround = uint8((t & 0xf0) >> 0x4);
+                uint8 bGround = uint8(t & 0xf);
+                if (fGround == bGround) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
