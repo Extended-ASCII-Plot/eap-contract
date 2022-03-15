@@ -22,7 +22,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
     uint256 private _currentIndex;
 
     // Mapping from tokenId to token index
-    mapping(uint256 => uint256) private _tokensIndex;
+    mapping(uint256 => uint256) public tokensIndex;
 
     constructor() ERC721("Extended ASCII Plot", "EAP") {}
 
@@ -32,7 +32,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
 
         _safeMint(to, tokenId);
 
-        _tokensIndex[tokenId] = _currentIndex++;
+        tokensIndex[tokenId] = _currentIndex++;
     }
 
     function tokenURI(uint256 tokenId)
@@ -50,7 +50,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
                     Base64.encode(
                         abi.encodePacked(
                             '{"name": "EAP #',
-                            _tokensIndex[tokenId].toString(),
+                            tokensIndex[tokenId].toString(),
                             '", "description": "Extended ASCII Plot (EAP) is user-generated 256bit textmode art fully stored on chain.", "image": "data:image/svg+xml;base64,',
                             Base64.encode(SVG.svg(tokenId)),
                             '"}'
