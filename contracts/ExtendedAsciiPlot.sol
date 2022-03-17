@@ -66,7 +66,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721Refundable {
         tokensIndex[tokenId] = _currentIndex++;
     }
 
-    function _tokenPrice(uint256) internal view override returns (uint128) {
+    function _currentPrice() internal view override returns (uint128) {
         return uint128(price);
     }
 

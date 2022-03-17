@@ -9,9 +9,7 @@ error RefundCallerNotOwner();
 error SomeRefundsArePending();
 
 /**
- * Making ERC721 tokens refundable during refund period.
- *
- * Assumes all ETH transfers are used only for minting in one transaction.
+ * Guaranteeing ERC721 tokens refundable during refund period.
  *
  * Token will be non-refundable if it has been transferred during refund period.
  */
@@ -23,22 +21,30 @@ abstract contract ERC721Refundable is ERC721 {
         uint128 price;
     }
 
+    mapping(uint256 => Refundability) internal _refundabilities;
+
     uint64 private immutable refundPeriod;
 
     uint64 public latestRefundabilityTimestamp;
 
-    mapping(uint256 => Refundability) internal _refundabilities;
+    /**
+     * @dev Should add this modifier to 'withdraw' function.
+     */
+    modifier noPendingRefunds() {
+        if (block.timestamp <= latestRefundabilityTimestamp)
+            revert SomeRefundsArePending();
+        _;
+    }
 
     constructor(uint64 _refundPeriod) {
         refundPeriod = _refundPeriod;
         latestRefundabilityTimestamp = uint64(block.timestamp) + _refundPeriod;
     }
 
-    function _tokenPrice(uint256 tokenId)
-        internal
-        view
-        virtual
-        returns (uint128);
+    /**
+     * @dev Price can be changed during sale. Just override this function and return current price.
+     */
+    function _currentPrice() internal view virtual returns (uint128);
 
     function _beforeTokenTransfer(
         address from,
@@ -68,10 +74,10 @@ abstract contract ERC721Refundable is ERC721 {
 
     function _afterTokenTransfer(
         address from,
-        address to,
+        address,
         uint256 tokenId
     ) internal override {
-        uint128 price = _tokenPrice(tokenId);
+        uint128 price = _currentPrice();
 
         // Payable mint.
         if (from == address(0) && price > 0) {
@@ -92,11 +98,5 @@ abstract contract ERC721Refundable is ERC721 {
         _burn(tokenId);
 
         payable(msg.sender).transfer(refundability.price);
-    }
-
-    modifier noPendingRefunds() {
-        if (block.timestamp <= latestRefundabilityTimestamp)
-            revert SomeRefundsArePending();
-        _;
     }
 }
