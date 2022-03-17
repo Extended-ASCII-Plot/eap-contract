@@ -95,10 +95,6 @@ contract ExtendedAsciiPlot is Ownable, ERC721Refundable {
             );
     }
 
-    function totalSupply() public view returns (uint256) {
-        return _currentIndex;
-    }
-
     function setPrice(uint256 _price) external onlyOwner {
         price = _price;
     }
