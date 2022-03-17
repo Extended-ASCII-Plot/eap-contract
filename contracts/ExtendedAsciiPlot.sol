@@ -5,9 +5,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import "./SVG.sol";
+import "./ERC721Refundable.sol";
 
 error CallerIsNotUser();
 error QueryNonexistentToken();
@@ -16,7 +16,7 @@ error NoFreeMintPrivilege();
 error InvalidTokenId();
 error MaximumSupplyExceed();
 
-contract ExtendedAsciiPlot is Ownable, ERC721 {
+contract ExtendedAsciiPlot is Ownable, ERC721Refundable {
     using Strings for uint256;
 
     uint256 public constant MAX_SUPPLY = 10000;
@@ -37,7 +37,10 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
         _;
     }
 
-    constructor() ERC721("Extended ASCII Plot", "EAP") {
+    constructor()
+        ERC721("Extended ASCII Plot", "EAP")
+        ERC721Refundable(7 days)
+    {
         freeMintPrivileges[0xEa8e1d16624CBf0290AB887129bB70E5Cdb4b557] = 1;
     }
 
@@ -61,6 +64,10 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
         _safeMint(to, tokenId);
 
         tokensIndex[tokenId] = _currentIndex++;
+    }
+
+    function _tokenPrice(uint256) internal view override returns (uint128) {
+        return uint128(price);
     }
 
     function tokenURI(uint256 tokenId)
@@ -96,7 +103,7 @@ contract ExtendedAsciiPlot is Ownable, ERC721 {
         price = _price;
     }
 
-    function withdraw() external onlyOwner {
+    function withdraw() external onlyOwner noPendingRefunds {
         payable(owner()).transfer(address(this).balance);
     }
 }
