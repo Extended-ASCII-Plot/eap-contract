@@ -12,14 +12,13 @@ import "./ERC721Refundable.sol";
 error CallerIsNotUser();
 error QueryNonexistentToken();
 error MintUnderPrice();
-error NoFreeMintPrivilege();
 error InvalidTokenId();
 error MaximumSupplyExceed();
 
 contract ExtendedAsciiPlot is Ownable, ERC721Refundable {
     using Strings for uint256;
 
-    uint256 public constant MAX_SUPPLY = 10000;
+    uint256 public constant MAX_SUPPLY = 4096;
 
     uint256 public price = 0.01 ether;
 
@@ -29,9 +28,6 @@ contract ExtendedAsciiPlot is Ownable, ERC721Refundable {
     // Mapping from tokenId to token index
     mapping(uint256 => uint256) public tokensIndex;
 
-    // Mapping from address to free mint count
-    mapping(address => uint256) public freeMintPrivileges;
-
     modifier callerIsUser() {
         if (tx.origin != msg.sender) revert CallerIsNotUser();
         _;
@@ -40,26 +36,12 @@ contract ExtendedAsciiPlot is Ownable, ERC721Refundable {
     constructor()
         ERC721("Extended ASCII Plot", "EAP")
         ERC721Refundable(7 days)
-    {
-        freeMintPrivileges[0xEa8e1d16624CBf0290AB887129bB70E5Cdb4b557] = 1;
-    }
+    {}
 
     function mint(address to, uint256 tokenId) public payable callerIsUser {
         if (msg.value < price) revert MintUnderPrice();
         if (!SVG.isValid(tokenId)) revert InvalidTokenId();
         if (_currentIndex >= MAX_SUPPLY) revert MaximumSupplyExceed();
-
-        _safeMint(to, tokenId);
-
-        tokensIndex[tokenId] = _currentIndex++;
-    }
-
-    function freeMint(address to, uint256 tokenId) public callerIsUser {
-        if (freeMintPrivileges[msg.sender] == 0) revert NoFreeMintPrivilege();
-        if (!SVG.isValid(tokenId)) revert InvalidTokenId();
-        if (_currentIndex >= MAX_SUPPLY) revert MaximumSupplyExceed();
-
-        freeMintPrivileges[msg.sender]--;
 
         _safeMint(to, tokenId);
 
