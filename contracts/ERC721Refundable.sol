@@ -19,8 +19,8 @@ abstract contract ERC721Refundable is ERC721 {
     struct Refundability {
         // The end of refund period.
         uint64 timestamp;
-        // Price value of available refunds.
-        uint128 value;
+        // Price of available refunds.
+        uint128 price;
     }
 
     uint64 private immutable refundPeriod;
@@ -45,20 +45,25 @@ abstract contract ERC721Refundable is ERC721 {
         address to,
         uint256 tokenId
     ) internal override {
+        Refundability storage refundability = _refundabilities[tokenId];
+
         // Save gas for future transfer.
-        if (block.timestamp > latestRefundabilityTimestamp) {
+        if (block.timestamp > refundability.timestamp) {
             return;
         }
 
-        // Transfer.
-        if (from != address(0) && to != address(0)) {
-            // Self transfer is ignored.
-            if (from != to) {
-                if (_refundabilities[tokenId].value > 0) {
-                    delete _refundabilities[tokenId];
-                }
-            }
+        // Mint or burn is ignored.
+        if (from == address(0) || to == address(0)) {
+            return;
         }
+
+        // Self transfer is ignored.
+        if (from == to) {
+            return;
+        }
+
+        // Wen losing refundability, refund gas.
+        delete _refundabilities[tokenId];
     }
 
     function _afterTokenTransfer(
@@ -66,29 +71,27 @@ abstract contract ERC721Refundable is ERC721 {
         address to,
         uint256 tokenId
     ) internal override {
-        // Mint.
-        if (from == address(0) && _tokenPrice(tokenId) > 0) {
-            _refundabilities[tokenId] = Refundability(
-                uint64(block.timestamp) + refundPeriod,
-                _tokenPrice(tokenId)
-            );
-            latestRefundabilityTimestamp =
-                uint64(block.timestamp) +
-                refundPeriod;
+        uint128 price = _tokenPrice(tokenId);
+
+        // Payable mint.
+        if (from == address(0) && price > 0) {
+            uint64 timestamp = uint64(block.timestamp) + refundPeriod;
+            _refundabilities[tokenId] = Refundability(timestamp, price);
+            latestRefundabilityTimestamp = timestamp;
         }
     }
 
     function refund(uint256 tokenId) public {
         Refundability memory refundability = _refundabilities[tokenId];
 
-        if (refundability.value == 0) revert RefundPriceIsZero();
+        if (refundability.price == 0) revert RefundPriceIsZero();
         if (block.timestamp > refundability.timestamp) revert RefundTimedOut();
         if (ownerOf(tokenId) != msg.sender) revert RefundCallerNotOwner();
 
         delete _refundabilities[tokenId];
         _burn(tokenId);
 
-        payable(msg.sender).transfer(refundability.value);
+        payable(msg.sender).transfer(refundability.price);
     }
 
     modifier noPendingRefunds() {
