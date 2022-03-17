@@ -17,8 +17,8 @@ error SomeRefundsArePending();
  */
 abstract contract ERC721Refundable is ERC721 {
     struct Refundability {
-        // The end of refund period.
-        uint64 timestamp;
+        // The deadline timestamp of refund period.
+        uint64 deadline;
         // Price of available refunds.
         uint128 price;
     }
@@ -48,7 +48,7 @@ abstract contract ERC721Refundable is ERC721 {
         Refundability storage refundability = _refundabilities[tokenId];
 
         // Save gas for future transfer.
-        if (block.timestamp > refundability.timestamp) {
+        if (block.timestamp > refundability.deadline) {
             return;
         }
 
@@ -85,7 +85,7 @@ abstract contract ERC721Refundable is ERC721 {
         Refundability memory refundability = _refundabilities[tokenId];
 
         if (refundability.price == 0) revert RefundPriceIsZero();
-        if (block.timestamp > refundability.timestamp) revert RefundTimedOut();
+        if (block.timestamp > refundability.deadline) revert RefundTimedOut();
         if (ownerOf(tokenId) != msg.sender) revert RefundCallerNotOwner();
 
         delete _refundabilities[tokenId];
