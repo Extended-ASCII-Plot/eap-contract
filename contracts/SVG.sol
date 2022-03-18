@@ -9,7 +9,7 @@ import "./Data.sol";
 library SVG {
     using Strings for uint8;
 
-    function svg(uint256 value) public pure returns (bytes memory) {
+    function svg(uint256 value) internal pure returns (bytes memory) {
         unchecked {
             return
                 abi.encodePacked(
@@ -20,7 +20,7 @@ library SVG {
         }
     }
 
-    function plot(uint256 value) public pure returns (bytes memory) {
+    function plot(uint256 value) internal pure returns (bytes memory) {
         bytes memory chars;
         for (uint8 x = 0; x < 4; x++) {
             for (uint8 y = 0; y < 4; y++) {
@@ -41,7 +41,7 @@ library SVG {
         uint16 value,
         uint8 x,
         uint8 y
-    ) public pure returns (bytes memory) {
+    ) internal pure returns (bytes memory) {
         uint64 font = Data.getFontAt((value & 0xff00) >> 0x8);
         (uint8 fRed, uint8 fGreen, uint8 fBlue) = Data.getColorAt(
             (value & 0xf0) >> 0x4
@@ -92,7 +92,7 @@ library SVG {
         uint8 x,
         uint8 y,
         bytes memory foreground
-    ) public pure returns (bytes memory) {
+    ) internal pure returns (bytes memory) {
         return
             abi.encodePacked(
                 "<rect x='",
@@ -105,7 +105,7 @@ library SVG {
             );
     }
 
-    function isValid(uint256 value) public pure returns (bool) {
+    function isValid(uint256 value) internal pure returns (bool) {
         unchecked {
             for (uint256 i = 0; i < 16; i++) {
                 uint16 t = uint16(value >> (i * 16));

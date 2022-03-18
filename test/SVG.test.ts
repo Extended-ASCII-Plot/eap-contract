@@ -2,26 +2,21 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-import { SVG } from "../typechain-types/SVG";
-import { Data } from "../typechain-types/Data";
+import { $SVG } from "../typechain-types/$SVG";
 
 describe("SVG", function () {
   let signers: SignerWithAddress[];
-  let library: SVG;
+  let library: $SVG;
 
   this.beforeAll(async () => {
-    const Data = await ethers.getContractFactory("Data");
-    const data = (await Data.deploy()) as Data;
-    const Library = await ethers.getContractFactory("SVG", {
-      libraries: { Data: data.address },
-    });
-    library = (await Library.deploy()) as SVG;
+    const Library = await ethers.getContractFactory("$SVG");
+    library = (await Library.deploy()) as $SVG;
     await library.deployed();
     signers = await ethers.getSigners();
   });
 
   it("char", async () => {
-    expect(ethers.utils.toUtf8String(await library.char(0xfff0, 0, 0))).to.eq(
+    expect(ethers.utils.toUtf8String(await library.$char(0xfff0, 0, 0))).to.eq(
       "<rect x='0' y='0' width='8' height='8' fill='rgb(0,0,0)' /><rect x='0' y='6' width='1' height='1' fill='rgb(255,204,170)' /><rect x='0' y='7' width='1' height='1' fill='rgb(255,204,170)' /><rect x='1' y='6' width='1' height='1' fill='rgb(255,204,170)' /><rect x='1' y='7' width='1' height='1' fill='rgb(255,204,170)' /><rect x='2' y='6' width='1' height='1' fill='rgb(255,204,170)' /><rect x='2' y='7' width='1' height='1' fill='rgb(255,204,170)' /><rect x='3' y='6' width='1' height='1' fill='rgb(255,204,170)' /><rect x='3' y='7' width='1' height='1' fill='rgb(255,204,170)' /><rect x='4' y='6' width='1' height='1' fill='rgb(255,204,170)' /><rect x='4' y='7' width='1' height='1' fill='rgb(255,204,170)' /><rect x='5' y='6' width='1' height='1' fill='rgb(255,204,170)' /><rect x='5' y='7' width='1' height='1' fill='rgb(255,204,170)' /><rect x='6' y='0' width='1' height='1' fill='rgb(255,204,170)' /><rect x='6' y='1' width='1' height='1' fill='rgb(255,204,170)' /><rect x='6' y='2' width='1' height='1' fill='rgb(255,204,170)' /><rect x='6' y='3' width='1' height='1' fill='rgb(255,204,170)' /><rect x='6' y='4' width='1' height='1' fill='rgb(255,204,170)' /><rect x='6' y='5' width='1' height='1' fill='rgb(255,204,170)' /><rect x='6' y='6' width='1' height='1' fill='rgb(255,204,170)' /><rect x='6' y='7' width='1' height='1' fill='rgb(255,204,170)' /><rect x='7' y='0' width='1' height='1' fill='rgb(255,204,170)' /><rect x='7' y='1' width='1' height='1' fill='rgb(255,204,170)' /><rect x='7' y='2' width='1' height='1' fill='rgb(255,204,170)' /><rect x='7' y='3' width='1' height='1' fill='rgb(255,204,170)' /><rect x='7' y='4' width='1' height='1' fill='rgb(255,204,170)' /><rect x='7' y='5' width='1' height='1' fill='rgb(255,204,170)' /><rect x='7' y='6' width='1' height='1' fill='rgb(255,204,170)' /><rect x='7' y='7' width='1' height='1' fill='rgb(255,204,170)' />"
     );
   });
@@ -29,7 +24,7 @@ describe("SVG", function () {
   it("svg", async () => {
     expect(
       ethers.utils.toUtf8String(
-        await library.svg(
+        await library.$svg(
           ethers.BigNumber.from(
             "0x3D7C291558C0D862490EA5D535DECDCEB94FD5BB646C18BBF8EFD112458145A7"
           )

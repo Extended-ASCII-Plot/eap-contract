@@ -3,7 +3,11 @@
 pragma solidity ^0.8.0;
 
 library Attribute {
-    function distinctCountOfChars(uint256 value) public pure returns (uint256) {
+    function distinctCountOfChars(uint256 value)
+        internal
+        pure
+        returns (uint256)
+    {
         unchecked {
             uint256 bits;
             for (uint256 i = 0; i < 16; i++) {
@@ -14,7 +18,7 @@ library Attribute {
         }
     }
 
-    function countSetBits(uint256 value) public pure returns (uint256) {
+    function countSetBits(uint256 value) internal pure returns (uint256) {
         if (value == 0) return 0;
         else return countSetBits(value & (value - 1)) + 1;
     }
